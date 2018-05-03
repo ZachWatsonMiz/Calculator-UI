@@ -30,9 +30,17 @@ class ConverterViewController: UIViewController {
    
     @IBAction func numberPressed(_ sender: UIButton)
     {
+        if sender.tag != 15 {
         inputDisplay.text = inputDisplay.text! + String(sender.tag-1)
         number = Double(inputDisplay.text!)!
         convert()
+        }
+        
+        if sender.tag == 15{
+            inputDisplay.text = inputDisplay.text! + "."
+            number = Double(inputDisplay.text!)!
+            convert()
+        }
     }
     
     @IBAction func signChange(_ sender: UIButton) {
