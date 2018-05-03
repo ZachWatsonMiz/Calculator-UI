@@ -10,10 +10,45 @@ import UIKit
 
 class ConverterViewController: UIViewController {
 
+    @IBOutlet weak var outputDisplayUnit: UITextField!
     @IBOutlet weak var outputDisplay: UITextField!
     @IBOutlet weak var inputDisplay: UITextField!
-   
+    @IBOutlet weak var inputDisplayUnit: UITextField!
     
+    var number: Double = 0;
+    var converted: Double = 0;
+    var currentConversion: Int = 0;
+    var sign: Bool = false;
+    
+    @IBAction func clear(_ sender: UIButton)
+    {
+        outputDisplay.text = ""
+        inputDisplay.text = ""
+        sign = false;
+        number = 0;
+    }
+   
+    @IBAction func numberPressed(_ sender: UIButton)
+    {
+        inputDisplay.text = inputDisplay.text! + String(sender.tag-1)
+        number = Double(inputDisplay.text!)!
+        convert()
+    }
+    
+    @IBAction func signChange(_ sender: UIButton) {
+        if sign == false{
+            number = number * -1
+            sign = true;
+            inputDisplay.text = "-" + inputDisplay.text!
+        }
+        else {
+            number = number * -1
+            sign = false;
+            inputDisplay.text = String(number)
+        }
+        convert()
+        
+    }
     struct ConversionType {
         let label: String?
         let inputUnit: String?
@@ -24,7 +59,7 @@ class ConverterViewController: UIViewController {
         ConversionType(label: "Fahrenheit to Celcius", inputUnit: "°F", outputUnit: "°C"),
         ConversionType(label: "Celcius to Fahrenheit", inputUnit: "°C", outputUnit: "°F"),
         ConversionType(label: "Miles to Kilometers", inputUnit: "mi", outputUnit: "km"),
-        ConversionType(label: "Kilometers to Miles", inputUnit: "m", outputUnit: "mi"),
+        ConversionType(label: "Kilometers to Miles", inputUnit: "km", outputUnit: "mi"),
         ]
     
     
@@ -33,20 +68,28 @@ class ConverterViewController: UIViewController {
         let converterAlertController = UIAlertController(title: nil, message: "Choose Converter", preferredStyle: .actionSheet)
         
         let fToC = UIAlertAction(title: conversions[0].label, style: .default) { action -> Void in
-            self.outputDisplay.text = self.conversions[0].outputUnit
-            self.inputDisplay.text = self.conversions[0].inputUnit
+            self.outputDisplayUnit.text = self.conversions[0].outputUnit
+            self.inputDisplayUnit.text = self.conversions[0].inputUnit
+            self.currentConversion = 0;
+            self.convert()
         }
         let cToF = UIAlertAction(title: conversions[1].label, style: .default) { action -> Void in
-            self.outputDisplay.text = self.conversions[1].outputUnit
-            self.inputDisplay.text = self.conversions[1].inputUnit
+            self.outputDisplayUnit.text = self.conversions[1].outputUnit
+            self.inputDisplayUnit.text = self.conversions[1].inputUnit
+            self.currentConversion = 1;
+            self.convert()
         }
         let miToKm = UIAlertAction(title: conversions[2].label, style: .default) { action -> Void in
-            self.outputDisplay.text = self.conversions[2].outputUnit
-            self.inputDisplay.text = self.conversions[2].inputUnit
+            self.outputDisplayUnit.text = self.conversions[2].outputUnit
+            self.inputDisplayUnit.text = self.conversions[2].inputUnit
+            self.currentConversion = 2;
+            self.convert()
         }
         let kmToM = UIAlertAction(title: conversions[3].label, style: .default) { action -> Void in
-            self.outputDisplay.text = self.conversions[3].outputUnit
-            self.inputDisplay.text = self.conversions[3].inputUnit
+            self.outputDisplayUnit.text = self.conversions[3].outputUnit
+            self.inputDisplayUnit.text = self.conversions[3].inputUnit
+            self.currentConversion = 3;
+            self.convert()
         }
        
         converterAlertController.addAction(fToC);
@@ -59,8 +102,10 @@ class ConverterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        outputDisplay.text = conversions[0].outputUnit
-        inputDisplay.text = conversions[0].inputUnit
+        outputDisplayUnit.text = conversions[0].outputUnit
+        inputDisplayUnit.text = conversions[0].inputUnit
+        self.inputDisplay.textAlignment = NSTextAlignment.right
+        self.outputDisplay.textAlignment = NSTextAlignment.right
 
         // Do any additional setup after loading the view.
     }
@@ -71,6 +116,48 @@ class ConverterViewController: UIViewController {
     }
     
 
+    func fToC(number: Double) -> Double{
+        return ((number - 32) * (5/9))
+    }
+    
+    func cToF(number: Double) -> Double{
+        return (number * 9/5 + 32)
+    }
+   
+    func kmToM(number: Double) -> Double{
+        return (number * 0.621371)
+    }
+    
+    func mToKm(number: Double) -> Double{
+        return (number * 1.621371)
+    }
+    
+    func convert() {
+        
+        switch(currentConversion){
+            
+        case 0:
+            let celsius = fToC(number: number)
+            outputDisplay.text = String(celsius)
+            
+        case 1:
+            let farhenheit = cToF(number: number)
+            outputDisplay.text = String(farhenheit)
+            
+        case 2:
+            let kilometers = mToKm(number: number)
+            outputDisplay.text = String(kilometers)
+            
+        case 3:
+            let miles = kmToM(number: number)
+            outputDisplay.text = String(miles)
+            
+        default:
+            print("ERROR")
+            break;
+            
+        }
+    }
     /*
     // MARK: - Navigation
 
